@@ -3,20 +3,14 @@ import posts from '../../data/posts.json';
 import '../../../styles/Post.css';
 
 type PostPageProps = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 };
 
-export async function generateStaticParams() {
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
-}
-
-
-export default function PostPage({ params }: PostPageProps) {
-  const post = posts.find((p) => p.slug === params.slug);
+export default async function PostPage({ params }: PostPageProps) {
+  const resolvedParams = await params;
+  const post = posts.find((p) => p.slug === resolvedParams.slug);
 
   if (!post) return notFound();
 
